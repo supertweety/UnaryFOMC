@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "Please cite the accompanying paper when using UnaryFOMC."
+title: "UnaryFOMC"
+type: software
+authors:
+  - family-names: "Kuzelka"
+    given-names: "Ondrej"
+version: 0.1.0
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Kuzelka"
+      given-names: "Ondrej"
+  title: "Unary Functions, Automorphisms, and Unlabeled First-Order Model Counting"
+  year: 2026
+  journal: "arXiv"
+  url: "https://arxiv.org/abs/2608.30580"

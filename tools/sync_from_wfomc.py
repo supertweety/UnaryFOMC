@@ -136,6 +136,10 @@ def preserve_module(text: str) -> str:
 
 
 EXPORTS = (
+    Export("src/wfomc/mso.py", "src/unaryfomc/mso.py", preserve_module),
+    Export("src/wfomc/mso_syntax.py", "src/unaryfomc/mso_syntax.py", preserve_module),
+    Export("src/wfomc/mso_specification.py", "src/unaryfomc/mso_specification.py", preserve_module),
+    Export("src/wfomc/_mso_algebra.py", "src/unaryfomc/_mso_algebra.py", preserve_module),
     Export("src/wfomc/c1f.py", "src/unaryfomc/c1f.py", transform_module),
     Export(
         "src/wfomc/specification.py",

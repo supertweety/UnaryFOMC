@@ -1,0 +1,227 @@
+[
+  {
+    "name": "rooted_trees",
+    "sentence": "exists r: (f(r)=r & (forall x: (forall ReachSet: ((ReachSet(x) & (forall w: (ReachSet(w) -> ReachSet(f(w))))) -> ReachSet(r)))))",
+    "bound": 8,
+    "labeled": [
+      0,
+      1,
+      2,
+      9,
+      64,
+      625,
+      7776,
+      117649,
+      2097152
+    ],
+    "unlabeled": [
+      0,
+      1,
+      1,
+      2,
+      4,
+      9,
+      20,
+      48,
+      115
+    ],
+    "compile_seconds": 0.007296457886695862,
+    "evaluation_seconds": 0.0014878748916089535,
+    "statistics": {
+      "compiler": "formula-congruence",
+      "original_nodes": 15,
+      "relational_nodes": 16,
+      "algebras_built": 24,
+      "transitions_evaluated": 6734,
+      "peak_intermediate_states": 67,
+      "branch_state_counts": [
+        [
+          1,
+          1,
+          2,
+          3
+        ]
+      ]
+    }
+  },
+  {
+    "name": "rooted_trees_even_depth_leaves",
+    "sentence": "exists A: exists r: (f(r)=r & A(r) & (forall x: (forall ReachSet: ((ReachSet(x) & (forall w: (ReachSet(w) -> ReachSet(f(w))))) -> ReachSet(r)))) & (forall x: (f(x)!=x -> (A(x) <-> ~A(f(x))))) & (forall x: ((forall y: (f(y)=x -> y=x)) -> A(x))))",
+    "bound": 8,
+    "labeled": [
+      0,
+      1,
+      0,
+      6,
+      12,
+      200,
+      1470,
+      20832,
+      282296
+    ],
+    "unlabeled": [
+      0,
+      1,
+      0,
+      1,
+      1,
+      3,
+      4,
+      10,
+      17
+    ],
+    "compile_seconds": 0.04538475000299513,
+    "evaluation_seconds": 0.0018202501814812422,
+    "statistics": {
+      "compiler": "formula-congruence",
+      "original_nodes": 38,
+      "relational_nodes": 39,
+      "algebras_built": 53,
+      "transitions_evaluated": 41140,
+      "peak_intermediate_states": 153,
+      "branch_state_counts": [
+        [
+          4,
+          3,
+          2,
+          3
+        ]
+      ]
+    }
+  },
+  {
+    "name": "exactly_two_components",
+    "sentence": "exists x,y: (~(forall Component: ((Component(x) & (forall w: (Component(w) <-> Component(f(w))))) -> Component(y))) & (forall z: ((forall Component: ((Component(x) & (forall w: (Component(w) <-> Component(f(w))))) -> Component(z))) | (forall Component: ((Component(y) & (forall w: (Component(w) <-> Component(f(w))))) -> Component(z))))))",
+    "bound": 8,
+    "labeled": [
+      0,
+      0,
+      1,
+      9,
+      95,
+      1220,
+      18694,
+      334369,
+      6852460
+    ],
+    "unlabeled": [
+      0,
+      0,
+      1,
+      2,
+      7,
+      17,
+      48,
+      127,
+      352
+    ],
+    "compile_seconds": 0.019078250043094158,
+    "evaluation_seconds": 0.001377082895487547,
+    "statistics": {
+      "compiler": "formula-congruence",
+      "original_nodes": 36,
+      "relational_nodes": 42,
+      "algebras_built": 59,
+      "transitions_evaluated": 25004,
+      "peak_intermediate_states": 67,
+      "branch_state_counts": [
+        [
+          1,
+          1,
+          1,
+          4
+        ]
+      ]
+    }
+  },
+  {
+    "name": "cycle_lengths_divisible_by_three",
+    "sentence": "exists A,B,C: forall x: ((A(x) | B(x) | C(x)) & ~(A(x) & B(x)) & ~(A(x) & C(x)) & ~(B(x) & C(x)) & (A(x) -> B(f(x))) & (B(x) -> C(f(x))) & (C(x) -> A(f(x))))",
+    "bound": 8,
+    "labeled": [
+      1,
+      0,
+      0,
+      2,
+      24,
+      300,
+      4480,
+      78750,
+      1591296
+    ],
+    "unlabeled": [
+      1,
+      0,
+      0,
+      1,
+      1,
+      3,
+      11,
+      25,
+      71
+    ],
+    "compile_seconds": 0.06557737500406802,
+    "evaluation_seconds": 0.0013280001003295183,
+    "statistics": {
+      "compiler": "formula-congruence",
+      "original_nodes": 39,
+      "relational_nodes": 45,
+      "algebras_built": 41,
+      "transitions_evaluated": 85339,
+      "peak_intermediate_states": 300,
+      "branch_state_counts": [
+        [
+          1,
+          1,
+          3,
+          2
+        ]
+      ]
+    }
+  },
+  {
+    "name": "one_marked_cycle_vertex_per_component",
+    "sentence": "forall x: exists p: (P(p) & (forall ReachSet: ((ReachSet(x) & (forall w: (ReachSet(w) -> ReachSet(f(w))))) -> ReachSet(p))) & (forall q: ((P(q) & (forall ReachSet: ((ReachSet(x) & (forall w: (ReachSet(w) -> ReachSet(f(w))))) -> ReachSet(q)))) -> q=p)))",
+    "bound": 8,
+    "labeled": [
+      1,
+      1,
+      5,
+      40,
+      437,
+      6036,
+      100657,
+      1965160,
+      43937385
+    ],
+    "unlabeled": [
+      1,
+      1,
+      3,
+      8,
+      24,
+      69,
+      209,
+      621,
+      1878
+    ],
+    "compile_seconds": 0.025140334153547883,
+    "evaluation_seconds": 0.0035196668468415737,
+    "statistics": {
+      "compiler": "formula-congruence",
+      "original_nodes": 30,
+      "relational_nodes": 34,
+      "algebras_built": 48,
+      "transitions_evaluated": 26297,
+      "peak_intermediate_states": 173,
+      "branch_state_counts": [
+        [
+          2,
+          3,
+          3,
+          2
+        ]
+      ]
+    }
+  }
+]

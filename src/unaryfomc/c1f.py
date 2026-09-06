@@ -1194,6 +1194,11 @@ def _profile_overlap_key(
     start: int,
     length: int,
 ) -> Tuple[Tuple[int, ...], Tuple[Tuple[bool, ...], ...]]:
+    """Canonically encode the restricted equality relation AND all unary types.
+
+    Equal orbit shapes alone do not make adjacent colored windows compatible.
+    Keep the complete unary vector at every overlapping position in the key.
+    """
     canonical_classes: Dict[int, int] = {}
     equality_key: List[int] = []
     unary_key: List[Tuple[bool, ...]] = []

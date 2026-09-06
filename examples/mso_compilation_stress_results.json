@@ -1,0 +1,132 @@
+[
+  {
+    "depth": 0,
+    "source_characters": 43,
+    "graph_state_lower_bound": "3",
+    "limits": {
+      "max_states": 5000,
+      "max_transitions": 2000000,
+      "wall_seconds": 15.0
+    },
+    "wall_seconds": 0.09071883396245539,
+    "status": "compiled",
+    "compile_seconds": 0.006736750015988946,
+    "statistics": {
+      "compiler": "formula-congruence",
+      "original_nodes": 12,
+      "relational_nodes": 10,
+      "algebras_built": 13,
+      "transitions_evaluated": 5320,
+      "peak_intermediate_states": 88,
+      "branch_state_counts": [
+        [
+          1,
+          1,
+          2,
+          3
+        ]
+      ]
+    },
+    "labeled_through_4": [
+      0,
+      0,
+      1,
+      7,
+      67
+    ],
+    "unlabeled_through_4": [
+      0,
+      0,
+      1,
+      2,
+      6
+    ],
+    "worker_seconds": 0.00735645811073482
+  },
+  {
+    "depth": 1,
+    "source_characters": 100,
+    "graph_state_lower_bound": "5",
+    "limits": {
+      "max_states": 5000,
+      "max_transitions": 2000000,
+      "wall_seconds": 15.0
+    },
+    "wall_seconds": 0.10325870802626014,
+    "status": "compiled",
+    "compile_seconds": 0.03189537511207163,
+    "statistics": {
+      "compiler": "formula-congruence",
+      "original_nodes": 24,
+      "relational_nodes": 20,
+      "algebras_built": 25,
+      "transitions_evaluated": 31490,
+      "peak_intermediate_states": 244,
+      "branch_state_counts": [
+        [
+          2,
+          2,
+          3,
+          5
+        ]
+      ]
+    },
+    "labeled_through_4": [
+      0,
+      0,
+      1,
+      1,
+      31
+    ],
+    "unlabeled_through_4": [
+      0,
+      0,
+      1,
+      1,
+      4
+    ],
+    "worker_seconds": 0.03239200008101761
+  },
+  {
+    "depth": 2,
+    "source_characters": 245,
+    "graph_state_lower_bound": "17",
+    "limits": {
+      "max_states": 5000,
+      "max_transitions": 2000000,
+      "wall_seconds": 15.0
+    },
+    "wall_seconds": 2.369717499939725,
+    "status": "compilation_limit",
+    "error": "MSO compilation exceeded max_transitions=2000000 (needed 2000001); no partial count was produced. Increase the explicit limit or simplify the sentence.",
+    "worker_seconds": 2.2915421249344945
+  },
+  {
+    "depth": 3,
+    "source_characters": 390,
+    "graph_state_lower_bound": "65537",
+    "limits": {
+      "max_states": 5000,
+      "max_transitions": 2000000,
+      "wall_seconds": 15.0
+    },
+    "wall_seconds": 2.6187667089980096,
+    "status": "compilation_limit",
+    "error": "MSO compilation exceeded max_transitions=2000000 (needed 2000001); no partial count was produced. Increase the explicit limit or simplify the sentence.",
+    "worker_seconds": 2.5304304170422256
+  },
+  {
+    "depth": 4,
+    "source_characters": 535,
+    "graph_state_lower_bound": "2^(65536)+1",
+    "limits": {
+      "max_states": 5000,
+      "max_transitions": 2000000,
+      "wall_seconds": 15.0
+    },
+    "wall_seconds": 2.593950957991183,
+    "status": "compilation_limit",
+    "error": "MSO compilation exceeded max_transitions=2000000 (needed 2000001); no partial count was produced. Increase the explicit limit or simplify the sentence.",
+    "worker_seconds": 2.4974897908978164
+  }
+]

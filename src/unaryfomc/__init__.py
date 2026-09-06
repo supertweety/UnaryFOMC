@@ -1,4 +1,4 @@
-"""Exact model counting for one-variable logic with one unary function."""
+"""Exact model counting for guarded C1 and monadic MSO with one unary function."""
 
 from .c1f import (
     C1FAtom,
@@ -41,6 +41,26 @@ from .asymptotics import (
     compile_c1f_labeled_specification,
 )
 from .specification import C1FLabeledSpecification
+from .mso import (
+    CompiledMSO,
+    MSOCompilationLimitError,
+    MSOCompilationStatistics,
+    MSOCompilerLimits,
+    compile_mso,
+    compile_mso_fomc,
+    compile_mso_ufomc,
+    evaluate_mso_fomc,
+    evaluate_mso_ufomc,
+    mso_fomc,
+    mso_ufomc,
+)
+from .mso_specification import MSOSpecification, evaluate_mso_specification
+from .mso_syntax import (
+    MSOAtom, MSOBinary, MSOBooleanConstant, MSOEquality, MSOFormula, MSONot,
+    MSOQuantifier, MSOTerm, evaluate_mso_formula, mso_predicate_arities,
+    parse_mso_formula, parse_mso_sentence, render_mso_formula, render_mso_term,
+    validate_mso_formula,
+)
 
 __all__ = [
     "C1FAtom",
@@ -80,4 +100,32 @@ __all__ = [
     "tokenize_c1f",
     "validate_c1f_formula",
     "analyze_c1f_labeled_asymptotics",
+    "CompiledMSO",
+    "MSOAtom",
+    "MSOBinary",
+    "MSOBooleanConstant",
+    "MSOCompilationLimitError",
+    "MSOCompilationStatistics",
+    "MSOCompilerLimits",
+    "MSOEquality",
+    "MSOFormula",
+    "MSONot",
+    "MSOQuantifier",
+    "MSOSpecification",
+    "MSOTerm",
+    "compile_mso",
+    "compile_mso_fomc",
+    "compile_mso_ufomc",
+    "evaluate_mso_fomc",
+    "evaluate_mso_formula",
+    "evaluate_mso_specification",
+    "evaluate_mso_ufomc",
+    "mso_fomc",
+    "mso_predicate_arities",
+    "mso_ufomc",
+    "parse_mso_formula",
+    "parse_mso_sentence",
+    "render_mso_formula",
+    "render_mso_term",
+    "validate_mso_formula",
 ]

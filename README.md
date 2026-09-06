@@ -3,6 +3,9 @@
 UnaryFOMC is a research package for exact finite-model counting in
 one-variable first-order logic with counting, equality, and one total unary
 function. The supported base fragment is denoted `C1_=[f]`.
+An additional backend supports full monadic second-order logic (MSO) over
+one total unary function, with arbitrarily many element variables and
+quantification over sets.
 
 Given a sentence `phi` and a domain size `n`, UnaryFOMC can compute:
 
@@ -15,6 +18,8 @@ Given a sentence `phi` and a domain size `n`, UnaryFOMC can compute:
 
 Both counts are exact integers. Unlabeled counting is performed directly; it
 is not obtained by dividing the labeled count by `n!`.
+The MSO backend currently provides exact counting, not asymptotic analysis.
+The asymptotic APIs remain specific to the supported C1/guarded specifications.
 
 ## Papers
 
@@ -98,7 +103,57 @@ print([int(labeled.fomc(n)) for n in range(6)])
 print([int(unlabeled.ufomc(n)) for n in range(6)])
 ```
 
-## Supported Logic
+## Full Monadic MSO
+
+Use `compile_mso` for sentences beyond the guarded one-variable fragment.
+For example, this sentence says that all directed cycles have even length:
+
+```python
+from unaryfomc import compile_mso
+
+models = compile_mso("exists X: forall x: (X(f(x)) <-> ~X(x))")
+print(models.sequence(8))
+# (1, 0, 1, 6, 57, 680, 9945, 172032, 3438673)
+print(models.sequence(8, labeled=False))
+# (1, 0, 1, 1, 5, 8, 27, 61, 181)
+```
+
+Here `X` is a quantified set, not part of the counted vocabulary. A function
+is counted once even when several sets witness the sentence. In contrast,
+free unary predicates are part of the structure being counted.
+
+Rooted trees also admit a fixed sentence: a fixed point `r` is reachable
+from every vertex. Reachability is expressed by quantifying over all
+forward-closed sets:
+
+```python
+trees = compile_mso(
+    "exists r: (f(r)=r & (forall x: forall X: "
+    "((X(x) & (forall y: (X(y) -> X(f(y))))) -> X(r))))"
+)
+print(trees.sequence(8))
+# (0, 1, 2, 9, 64, 625, 7776, 117649, 2097152)
+print(trees.sequence(8, labeled=False))
+# (0, 1, 1, 2, 4, 9, 20, 48, 115)
+```
+
+The root has a self-loop; every other function edge points toward the root.
+The labeled count is `n**(n-1)` for positive `n`.
+
+The command-line equivalent selects MSO explicitly:
+
+```bash
+unaryfomc --logic mso 'exists X: forall x: (X(f(x)) <-> ~X(x))' 8 --unlabeled
+# 181
+```
+
+Compilation is independent of `n` and can be reused. Evaluation is polynomial
+in `n` and the explicit specification size; compilation has nonelementary
+worst-case dependence on the sentence. Configurable compilation limits raise
+an error rather than return an incomplete count. See
+[MSO counting](docs/mso-counting.md) for syntax, limits, and the construction.
+
+## Supported C1 Logic
 
 Terms are formed by iterating one unary function symbol. The parser accepts
 the following constructs.

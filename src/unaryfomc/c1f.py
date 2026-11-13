@@ -196,10 +196,11 @@ class _C1FParser:
         return left
 
     def _parse_implies(self) -> C1FFormula:
+        # A chain of implications groups to the right, as in the MSO parser:
+        # A -> B -> C is A -> (B -> C).
         left = self._parse_or()
-        while self._match("IMPLIES") is not None:
-            right = self._parse_or()
-            left = C1FBinary("->", left, right)
+        if self._match("IMPLIES") is not None:
+            return C1FBinary("->", left, self._parse_implies())
         return left
 
     def _parse_or(self) -> C1FFormula:

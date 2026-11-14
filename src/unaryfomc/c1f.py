@@ -196,10 +196,11 @@ class _C1FParser:
         return left
 
     def _parse_implies(self) -> C1FFormula:
+        # A chain of implications groups to the right, as in the MSO parser:
+        # A -> B -> C is A -> (B -> C).
         left = self._parse_or()
-        while self._match("IMPLIES") is not None:
-            right = self._parse_or()
-            left = C1FBinary("->", left, right)
+        if self._match("IMPLIES") is not None:
+            return C1FBinary("->", left, self._parse_implies())
         return left
 
     def _parse_or(self) -> C1FFormula:
@@ -453,8 +454,14 @@ def render_c1f_formula(node: C1FFormula, *, function_symbol: str = "f") -> str:
             )
         return f"~({render_c1f_formula(node.body, function_symbol=function_symbol)})"
     if isinstance(node, C1FBinary):
+        left = render_c1f_formula(node.left, function_symbol=function_symbol)
+        if isinstance(node.left, (C1FQuantifier, C1FPredecessorCount)):
+            # A quantifier extends as far to the right as possible.  A
+            # quantified left operand is therefore closed by parentheses;
+            # otherwise the connective would be read as part of its body.
+            left = f"({left})"
         return (
-            f"({render_c1f_formula(node.left, function_symbol=function_symbol)} "
+            f"({left} "
             f"{node.op} {render_c1f_formula(node.right, function_symbol=function_symbol)})"
         )
     if isinstance(node, C1FQuantifier):
@@ -833,9 +840,12 @@ def _collect_trace_configs(
     node: C1FFormula,
     *,
     function_symbol: str,
+    reserved_names: Iterable[str] = (),
 ) -> Dict[str, _TraceConfig]:
     arities = c1f_predicate_arities(node)
-    occupied = set(arities) | {function_symbol}
+    # The fresh trace predicates must also avoid the symbols of the counted
+    # vocabulary that simplification has removed from ``node``.
+    occupied = set(arities) | {function_symbol} | set(reserved_names)
     gammas_by_predicate: Dict[str, set[Tuple[int, ...]]] = {
         predicate: set()
         for predicate, arity in arities.items()
@@ -944,15 +954,22 @@ def _compress_higher_arity_relations(
     node: C1FFormula,
     *,
     function_symbol: str,
-) -> Tuple[C1FFormula, Tuple[int, ...], int]:
-    configs = _collect_trace_configs(node, function_symbol=function_symbol)
-    if not configs:
-        return node, tuple(), 0
-    arities = c1f_predicate_arities(node)
-    higher_relation_arities = tuple(
-        arities[predicate]
-        for predicate in sorted(configs)
+    reserved_names: Iterable[str] = (),
+) -> Tuple[C1FFormula, int]:
+    """Replace the higher-arity atoms of ``node`` by fresh unary trace atoms.
+
+    Returns the monadic formula and the number of trace predicates that it
+    introduces.  The arities of the higher-arity relations are not returned:
+    they belong to the counted vocabulary, which the caller fixes before
+    simplification, and not to the atoms that are still present in ``node``.
+    """
+    configs = _collect_trace_configs(
+        node,
+        function_symbol=function_symbol,
+        reserved_names=reserved_names,
     )
+    if not configs:
+        return node, 0
     trace_predicate_count = sum(len(config.gammas) for config in configs.values())
     def transform(current: C1FFormula) -> C1FFormula:
         if isinstance(current, C1FAtom):
@@ -1009,7 +1026,7 @@ def _compress_higher_arity_relations(
             )
         raise TypeError(f"Unsupported C1F node: {type(current)!r}")
 
-    return _simplify(transform(node)), higher_relation_arities, trace_predicate_count
+    return _simplify(transform(node)), trace_predicate_count
 
 
 @dataclass(frozen=True)
@@ -2543,6 +2560,7 @@ def _compile_monadic_c1f(
     function_symbol: str,
     profile_pruning: bool,
     twin_compression: bool,
+    unary_vocabulary: Iterable[str] = (),
 ) -> _CompiledMonadicC1F:
     validate_c1f_formula(node, require_closed=True, function_symbol=function_symbol)
     arities = c1f_predicate_arities(node)
@@ -2552,7 +2570,11 @@ def _compile_monadic_c1f(
             "Monadic C1F compilation expects only unary predicates; found "
             + ", ".join(non_unary)
     )
-    unary_predicates = tuple(sorted(arities))
+    # ``unary_vocabulary`` lists unary predicates that are counted even though
+    # they need not occur in ``node``: a predicate that simplification removed
+    # from the sentence is still interpreted freely in every structure.  The
+    # profiles record all of them, and the predicates of ``node`` in any case.
+    unary_predicates = tuple(sorted(set(arities) | set(unary_vocabulary)))
     depth = _max_term_depth(node)
     predicate_index = {predicate: index for index, predicate in enumerate(unary_predicates)}
     pruning_filters = _profile_pruning_filters(node) if profile_pruning else tuple()
@@ -2727,13 +2749,26 @@ def compile_c1f_fomc(
     validate_c1f_formula(parsed, require_closed=True, function_symbol=function_symbol)
     arities = c1f_predicate_arities(parsed)
     nullaries = tuple(sorted(predicate for predicate, arity in arities.items() if arity == 0))
+    # The models are counted over the vocabulary of the sentence as given.
+    # Fix it here: substituting the nullary symbols and simplifying Boolean
+    # constants below may remove relation symbols from a branch, but such a
+    # symbol is still interpreted freely in the structures of that branch.
+    unary_vocabulary = tuple(
+        sorted(predicate for predicate, arity in arities.items() if arity == 1)
+    )
+    higher_relation_arities = tuple(
+        arities[predicate]
+        for predicate in sorted(arities)
+        if arities[predicate] >= 2
+    )
     branches: List[_CompiledC1FBranch] = []
     for values in product((False, True), repeat=len(nullaries)):
         assignment = dict(zip(nullaries, values))
         specialized = _simplify(_replace_nullary(parsed, assignment))
-        monadic_formula, higher_relation_arities, trace_predicate_count = _compress_higher_arity_relations(
+        monadic_formula, trace_predicate_count = _compress_higher_arity_relations(
             specialized,
             function_symbol=function_symbol,
+            reserved_names=arities,
         )
         branches.append(
             _CompiledC1FBranch(
@@ -2742,6 +2777,7 @@ def compile_c1f_fomc(
                     function_symbol=function_symbol,
                     profile_pruning=profile_pruning,
                     twin_compression=twin_compression,
+                    unary_vocabulary=unary_vocabulary,
                 ),
                 higher_relation_arities=higher_relation_arities,
                 trace_predicate_count=trace_predicate_count,

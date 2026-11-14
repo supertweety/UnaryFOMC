@@ -9,14 +9,16 @@ quantification over sets.
 
 Given a sentence `phi` and a domain size `n`, UnaryFOMC can compute:
 
-- the number of labeled models of `phi` on the domain `[n]`; and
+- the number of labeled models of `phi` on the domain `[n]`;
 - for monadic relational vocabularies, the number of `n`-element models up to
-  isomorphism.
+  isomorphism;
 - effective labeled and unlabeled asymptotic expansions in the regular
-  finite-radius regimes developed in Part II; and
+  finite-radius regimes described in
+  [Labeled asymptotics](docs/labeled-asymptotics.md) and
+  [Unlabeled asymptotics](docs/unlabeled-asymptotics.md); and
 - optional Arb interval certificates for the recognized asymptotic regimes.
 
-Both counts are exact integers. Unlabeled counting is performed directly; it
+The two counts are exact integers. Unlabeled counting is performed directly; it
 is not obtained by dividing the labeled count by `n!`.
 The MSO backend currently provides exact counting, not asymptotic analysis.
 The asymptotic APIs remain specific to the supported C1/guarded specifications.
@@ -32,9 +34,13 @@ UnaryFOMC accompanies the following work:
 
 <!-- Replace the Part II placeholder above when the manuscript is public. -->
 
-Part II develops the generating-function and exact unlabeled constructions,
-guarded predecessor counting, and further extensions implemented in this
-repository.
+Part II develops the exact unlabeled counting implemented in this repository:
+the generating-function construction for `C1_=[f]` and the finite
+specification for monadic second-order logic. Guarded predecessor counting
+and the asymptotic analysis are not treated in Part II. They are described in
+[Guarded predecessor counting](docs/guarded-predecessor-counting.md),
+[Labeled asymptotics](docs/labeled-asymptotics.md), and
+[Unlabeled asymptotics](docs/unlabeled-asymptotics.md).
 
 ## Installation
 
@@ -174,6 +180,13 @@ quantifiers. Parentheses may be used freely. A different function symbol can
 be selected with the `function_symbol` API argument or the CLI option
 `--function-symbol`.
 
+Without parentheses, `~` binds most tightly, followed by `&`, `|`, `->`, and
+`<->`. Chains of `&`, `|`, and `<->` group to the left. A chain of `->` groups
+to the right, so `A -> B -> C` means `A -> (B -> C)`. A quantifier extends
+over the formula that follows it as far as possible, so
+`exists x: P(x) -> A` means `exists x: (P(x) -> A)`. The MSO parser uses the
+same conventions.
+
 The formula must remain one-variable after accounting for bound variables.
 For labeled counting, relation symbols may have arbitrary fixed arity, but all
 arguments of a local atom are forward terms rooted at the same variable. Exact
@@ -216,6 +229,20 @@ The unary function is a genuine total function and is always part of the
 counted vocabulary, even when it is not mentioned in the sentence. Thus
 `c1f_fomc("TRUE", n)` counts all endofunctions: it returns `n**n` for positive
 `n`, and one for the empty domain.
+
+Every relation symbol that occurs in the sentence as written is part of the
+counted vocabulary as well, even where the sentence does not constrain it.
+For example, `(exists x: P(x)) | TRUE` holds in every structure, and its
+labeled count is the number of all structures with one unary predicate, which
+is `2**n * n**n` for positive `n`. The C1 interface has no argument that
+declares a relation symbol. To count over a predicate that a sentence `phi`
+does not otherwise mention, conjoin a tautology in parentheses, as in
+`(phi) & (forall x: (P(x) | ~P(x)))`. The parentheses matter: a quantifier
+that is written first without them extends over the rest of the sentence. In
+the Python API, the MSO functions (`compile_mso`, `mso_fomc`, and
+`mso_ufomc`) take a `predicates=` argument that adds unary predicates for
+this purpose. The command line has no corresponding option, and the tautology
+works there as well.
 
 Labeled counting treats the domain as a fixed `n`-element set. Unlabeled
 counting identifies structures related by a bijection preserving the function

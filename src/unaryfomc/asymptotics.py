@@ -3679,7 +3679,12 @@ def _unlabeled_log_ogf(
     levels: list[tuple[float, ...] | None],
     profile_fugacities: Sequence[float] | None = None,
 ) -> float:
-    """Evaluate the truncation of equations (48)--(50)."""
+    """Evaluate the truncated logarithm of the unlabeled OGF.
+
+    The logarithm is the sum of ``C(x^k) / k`` over ``k``, where ``C`` is
+    the series of the connected components (see the UnaryFOMC
+    documentation, docs/unlabeled-counting.md).
+    """
 
     tail_terms = len(levels) - 1
     long_profiles = specification._long_cycle_profiles()
@@ -4189,7 +4194,11 @@ def _analyze_unlabeled_global_markers(
     max_precision_bits: int | None,
     expansion_order: int = 0,
 ) -> C1FUnlabeledAsymptotics:
-    """Apply Proposition 29 to the numerical subcritical Pólya system."""
+    """Analyze the subcritical Pólya system under global counters.
+
+    The numerical Pólya system is analyzed separately for every accepted
+    state of the capped counters.
+    """
 
     monadic = compiled.branches[0].monadic
     plan = monadic.cardinality_plan
@@ -4409,9 +4418,11 @@ def c1f_unlabeled_asymptotics(
 ) -> C1FUnlabeledAsymptotics:
     """Analyze subcritical monadic or higher-arity unlabeled asymptotics.
 
-    Monadic inputs use the Pólya system of Theorem 41.  Higher-arity inputs use
-    the rigidity transfer of Theorem 47 and Corollary 48 and are divided by
-    ``n!`` only after the exact free-relation factor has been restored.
+    Monadic inputs use the Pólya system of the exact unlabeled construction.
+    Higher-arity inputs use the rigidity transfer from the labeled problem
+    and are divided by ``n!`` only after the exact free-relation factor has
+    been restored (see the UnaryFOMC documentation,
+    docs/unlabeled-asymptotics.md).
     ``expansion_order`` requests successive half-orders after the leading
     term.
     """

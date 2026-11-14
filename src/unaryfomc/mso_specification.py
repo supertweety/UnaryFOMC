@@ -1,6 +1,10 @@
 """Finite composition algebras and exact evaluation for MSO function graphs.
 
-The four sorts and operations implement Part II, equations (32)--(43).
+The four sorts and their operations are those of Part II, Section 4.1.
+``evaluate_mso_specification`` evaluates the finite specification of
+Part II, Section 4.2, equations (12)--(17).  These equations count
+isomorphism classes.  Labeled counts use the same equations without the
+repetition terms (only k = 1), read as exponential generating functions.
 States need only form a sound sentence-recognizing congruence; complete
 rank-r theories are one possible choice, not required by the evaluator.
 """

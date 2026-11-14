@@ -454,8 +454,14 @@ def render_c1f_formula(node: C1FFormula, *, function_symbol: str = "f") -> str:
             )
         return f"~({render_c1f_formula(node.body, function_symbol=function_symbol)})"
     if isinstance(node, C1FBinary):
+        left = render_c1f_formula(node.left, function_symbol=function_symbol)
+        if isinstance(node.left, (C1FQuantifier, C1FPredecessorCount)):
+            # A quantifier extends as far to the right as possible.  A
+            # quantified left operand is therefore closed by parentheses;
+            # otherwise the connective would be read as part of its body.
+            left = f"({left})"
         return (
-            f"({render_c1f_formula(node.left, function_symbol=function_symbol)} "
+            f"({left} "
             f"{node.op} {render_c1f_formula(node.right, function_symbol=function_symbol)})"
         )
     if isinstance(node, C1FQuantifier):

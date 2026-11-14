@@ -60,6 +60,11 @@ formula; parenthesize a quantified subformula when combining it with an
 outside connective. Shadowing is supported. The renderer emits explicit
 sorts and parentheses for an unambiguous round trip.
 
+Without parentheses, `~` binds most tightly, followed by `&`, `|`, `->`, and
+`<->`. Chains of `&`, `|`, and `<->` group to the left. A chain of `->` groups
+to the right, so `A -> B -> C` means `A -> (B -> C)`. The C1 parser uses the
+same conventions.
+
 All element variables must be bound. Set equality can be written
 `forall x: (X(x) <-> Y(x))`. Fixed cardinalities can be expressed using
 distinct element witnesses, but native `exists=...` counting syntax belongs
@@ -86,14 +91,18 @@ case splitting, including on the empty domain.
 ## Compilation And Evaluation
 
 The evaluator implements the four-sorted finite specification of Part II,
-Section 6, equations (32)--(43). Its states describe forests, rooted trees,
-dotted cycle segments, and complete function graphs. Tables implement
+Section 4.2 ("A Finite Unlabeled Specification"), equations (12)--(17).
+These equations count isomorphism classes. Labeled counts use the same
+equations without the repetition terms, read as exponential generating
+functions. The section and equation numbers are those of the manuscript of
+November 2026. The states of the specification describe forests, rooted
+trees, dotted cycle segments, and complete function graphs. Tables implement
 disjoint union, adding a colored root, forgetting its designation,
 concatenating dotted segments, and closing the cycle.
 
 The practical compiler builds a **sentence-specific accepting congruence**,
 not the full spaces of bounded-rank MSO theories from the theoretical
-compiler in Section 6.3:
+compiler of Part II, Section 4.4 ("Compilation Complexity"):
 
 1. Alpha-rename variables and translate iterated terms into paths in the
    graph of the total function.
@@ -131,7 +140,7 @@ complexity in the table size and requested degree. The implementation uses
 straightforward truncated convolutions, not fast power-series algorithms.
 The nonelementary worst-case compilation barrier remains: repeated
 powerset projection can be very expensive. This implementation does not
-claim to attain the paper's particular bounded-rank compiler bound.
+claim to attain the compiler bound of Part II, Section 4.4.
 
 ## Limits And Inspection
 

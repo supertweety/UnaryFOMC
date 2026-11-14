@@ -3,7 +3,8 @@
 Compilation recognizes sentences with finite four-sorted composition
 algebras. Boolean products and powerset projection give a complete
 sentence-specific alternative to constructing every bounded-rank theory.
-Coefficient extraction is the finite specification of Part II, Section 6.
+Coefficient extraction evaluates the finite specification of Part II,
+Section 4.2 ("A Finite Unlabeled Specification").
 """
 
 from __future__ import annotations
